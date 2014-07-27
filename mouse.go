@@ -41,7 +41,7 @@ func (s State) String() string {
 	case ScrollRight:
 		return "ScrollRight"
 	}
-	return fmt.Sprintf("State(%d)")
+	return fmt.Sprintf("State(%d)", s)
 }
 
 // Button represents an single mouse button.
