@@ -9,8 +9,8 @@ import (
 	"time"
 )
 
-// Event represents an single mouse event, such as pushing an button, or using
-// the scroll-wheel, etc.
+// Event represents an single mouse event, such as pushing a button. Use the
+// Scrolled type instead for scrolling events.
 type Event struct {
 	T      time.Time
 	Button Button
@@ -25,4 +25,22 @@ func (e Event) Time() time.Time {
 // String returns an string representation of this event.
 func (e Event) String() string {
 	return fmt.Sprintf("Event(Button=%v, State=%v, Time=%v)", e.Button, e.State, e.T)
+}
+
+// Scrolled is an event where the user has scrolled their mouse wheel.
+type Scrolled struct {
+	T time.Time
+
+	// Amount of scrolling in horizontal (X) and vertical (Y) directions.
+	X, Y float64
+}
+
+// String returns a string representation of this event.
+func (ev Scrolled) String() string {
+	return fmt.Sprintf("Scrolled(X=%f, Y=%f, Time=%v)", ev.X, ev.Y, ev.T)
+}
+
+// Time implements the Event interface.
+func (ev Scrolled) Time() time.Time {
+	return ev.T
 }
