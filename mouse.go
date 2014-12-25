@@ -4,8 +4,7 @@
 
 package mouse
 
-// State represents an single mouse state, such as Up, Down, or a scroll
-// direction.
+// State represents an single mouse state, such as Up or Down.
 type State int
 
 const (
