@@ -28,6 +28,8 @@ const (
 	Eight
 )
 
+// Left, Right, and Wheel are simply aliases. Their true names are mouse button
+// One, Two, and Three.
 const (
 	Left  = One
 	Right = Two
