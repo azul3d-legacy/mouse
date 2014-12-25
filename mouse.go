@@ -4,7 +4,7 @@
 
 package mouse
 
-// State represents an single mouse state, such as Up or Down.
+// State represents a single mouse state, such as Up or Down.
 type State int
 
 const (
@@ -13,7 +13,7 @@ const (
 	Up
 )
 
-// Button represents an single mouse button.
+// Button represents a single mouse button.
 type Button int
 
 const (
