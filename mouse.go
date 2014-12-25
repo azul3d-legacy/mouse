@@ -7,6 +7,9 @@ package mouse
 // State represents a single mouse state, such as Up or Down.
 type State uint8
 
+// Mouse button state constants, Down implies the button is currently pressed
+// down, and up implies it is not. The InvalidState is declared to help users
+// detect uninitialized variables.
 const (
 	InvalidState State = iota
 	Down
