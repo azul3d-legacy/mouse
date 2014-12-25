@@ -35,12 +35,12 @@ type Scrolled struct {
 	X, Y float64
 }
 
-// String returns a string representation of this event.
-func (ev Scrolled) String() string {
-	return fmt.Sprintf("Scrolled(X=%f, Y=%f, Time=%v)", ev.X, ev.Y, ev.T)
+// Time implements the Event interface.
+func (s Scrolled) Time() time.Time {
+	return s.T
 }
 
-// Time implements the Event interface.
-func (ev Scrolled) Time() time.Time {
-	return ev.T
+// String returns a string representation of this event.
+func (s Scrolled) String() string {
+	return fmt.Sprintf("Scrolled(X=%f, Y=%f, Time=%v)", s.X, s.Y, s.T)
 }
