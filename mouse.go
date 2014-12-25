@@ -16,6 +16,8 @@ const (
 // Button represents a single mouse button.
 type Button uint8
 
+// Mouse button constants for buttons one through eight. The Invalid button is
+// declared to help users detect uninitialized variables.
 const (
 	Invalid Button = iota
 	One
