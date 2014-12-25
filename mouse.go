@@ -5,7 +5,7 @@
 package mouse
 
 // State represents a single mouse state, such as Up or Down.
-type State int
+type State uint8
 
 const (
 	InvalidState State = iota
@@ -14,7 +14,7 @@ const (
 )
 
 // Button represents a single mouse button.
-type Button int
+type Button uint8
 
 const (
 	Invalid Button = iota
