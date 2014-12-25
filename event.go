@@ -9,8 +9,7 @@ import (
 	"time"
 )
 
-// Event represents an single mouse event, such as pushing a button. Use the
-// Scrolled type instead for scrolling events.
+// Event represents an single mouse event, such as pushing a button.
 type Event struct {
 	T      time.Time
 	Button Button
