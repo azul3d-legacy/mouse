@@ -39,7 +39,8 @@ func (s *Watcher) SetState(button Button, state State) {
 	s.states[button] = state
 }
 
-// States returns an copy of the internal mouse button state map used by this watcher.
+// States returns an copy of the internal mouse button state map used by this
+// watcher.
 func (s *Watcher) States() map[Button]State {
 	s.access.RLock()
 	defer s.access.RUnlock()
@@ -63,7 +64,8 @@ func (s *Watcher) State(button Button) State {
 	return state
 }
 
-// Down tells whether the specified mouse button is currently in the down state.
+// Down tells whether the specified mouse button is currently in the down
+// state.
 func (s *Watcher) Down(button Button) bool {
 	return s.State(button) == Down
 }
