@@ -4,10 +4,6 @@
 
 package mouse
 
-import (
-	"fmt"
-)
-
 // State represents an single mouse state, such as Up, Down, or a scroll
 // direction.
 type State int
@@ -17,19 +13,6 @@ const (
 	Down
 	Up
 )
-
-// String returns an string representation of the mouse state.
-func (s State) String() string {
-	switch s {
-	case InvalidState:
-		return "InvalidState"
-	case Down:
-		return "Down"
-	case Up:
-		return "Up"
-	}
-	return fmt.Sprintf("State(%d)", s)
-}
 
 // Button represents an single mouse button.
 type Button int
@@ -45,31 +28,6 @@ const (
 	Seven
 	Eight
 )
-
-// String returns an string representation of the mouse button.
-func (b Button) String() string {
-	switch b {
-	case Invalid:
-		return "Invalid"
-	case Left:
-		return "Left"
-	case Right:
-		return "Right"
-	case Wheel:
-		return "Wheel"
-	case Four:
-		return "Four"
-	case Five:
-		return "Five"
-	case Six:
-		return "Six"
-	case Seven:
-		return "Seven"
-	case Eight:
-		return "Eight"
-	}
-	return fmt.Sprintf("Button(%d)", b)
-}
 
 const (
 	Left  = One
