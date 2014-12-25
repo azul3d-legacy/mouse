@@ -52,6 +52,26 @@ func (s *Watcher) States() map[Button]State {
 	return copy
 }
 
+// EachState calls f with each known button to this watcher and it's current
+// button state. It does so until the function returns false or there are no
+// more buttons known to the watcher.
+func (s *Watcher) EachState(f func(b Button, s State) bool) {
+	s.access.RLock()
+	defer s.access.RUnlock()
+
+	for button, state := range s.states {
+		// Call the function without the lock being held, so they can access
+		// methods on this watcher still.
+		s.access.RUnlock()
+		cont := f(button, state)
+		s.access.RLock()
+
+		if !cont {
+			return
+		}
+	}
+}
+
 // State returns the current state of the specified mouse button.
 func (s *Watcher) State(button Button) State {
 	s.access.Lock()
