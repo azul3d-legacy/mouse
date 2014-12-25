@@ -80,6 +80,7 @@ func (w *Watcher) State(button Button) State {
 	state, ok := w.states[button]
 	if !ok {
 		w.states[button] = Up
+		return Up
 	}
 	return state
 }
