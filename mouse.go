@@ -2,51 +2,25 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-// Package mouse implements various mouse related data types.
 package mouse
 
-import (
-	"fmt"
-)
+// State represents a single mouse state, such as Up or Down.
+type State uint8
 
-// State represents an single mouse state, such as Up, Down, or a scroll
-// direction.
-type State int
-
+// Mouse button state constants, Down implies the button is currently pressed
+// down, and up implies it is not. The InvalidState is declared to help users
+// detect uninitialized variables.
 const (
 	InvalidState State = iota
 	Down
 	Up
-	ScrollForward
-	ScrollBack
-	ScrollLeft
-	ScrollRight
 )
 
-// String returns an string representation of the mouse state.
-func (s State) String() string {
-	switch s {
-	case InvalidState:
-		return "InvalidState"
-	case Down:
-		return "Down"
-	case Up:
-		return "Up"
-	case ScrollForward:
-		return "ScrollForward"
-	case ScrollBack:
-		return "ScrollBack"
-	case ScrollLeft:
-		return "ScrollLeft"
-	case ScrollRight:
-		return "ScrollRight"
-	}
-	return fmt.Sprintf("State(%d)", s)
-}
+// Button represents a single mouse button.
+type Button uint8
 
-// Button represents an single mouse button.
-type Button int
-
+// Mouse button constants for buttons one through eight. The Invalid button is
+// declared to help users detect uninitialized variables.
 const (
 	Invalid Button = iota
 	One
@@ -59,33 +33,11 @@ const (
 	Eight
 )
 
-// String returns an string representation of the mouse button.
-func (b Button) String() string {
-	switch b {
-	case Invalid:
-		return "Invalid"
-	case Left:
-		return "Left"
-	case Right:
-		return "Right"
-	case Wheel:
-		return "Wheel"
-	case Four:
-		return "Four"
-	case Five:
-		return "Five"
-	case Six:
-		return "Six"
-	case Seven:
-		return "Seven"
-	case Eight:
-		return "Eight"
-	}
-	return fmt.Sprintf("Button(%d)", b)
-}
-
+// Left, Right, Middle and Wheel are simply aliases. Their true names are mouse
+// button One, Two, and Three (for both Middle and Wheel, respectively).
 const (
 	Left  = One
 	Right = Two
 	Wheel = Three
+	Middle = Three
 )

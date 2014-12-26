@@ -13,7 +13,10 @@ import (
 // Watcher watches the state of various mouse buttons and their states.
 type Watcher struct {
 	access sync.RWMutex
-	states map[Button]State
+
+	// states is a (at max 8-bit) lookup table, where the indexes are literally
+	// Button values.
+	states []State
 }
 
 // String returns a multi-line string representation of this mouse watcher and
@@ -23,59 +26,113 @@ func (w *Watcher) String() string {
 	defer w.access.RUnlock()
 
 	bb := new(bytes.Buffer)
-	fmt.Fprintf(bb, "Watcher(\n")
+	fmt.Fprintf(bb, "mouse.Watcher(\n")
 	for b, s := range w.states {
-		fmt.Fprintf(bb, "    %v: %v\n", b, s)
+		if s == InvalidState {
+			continue
+		}
+		fmt.Fprintf(bb, "\t%v: %v,\n", Button(b), s)
 	}
 	fmt.Fprintf(bb, ")")
 	return bb.String()
 }
 
 // SetState specifies the current state of the specified mouse button.
-func (s *Watcher) SetState(button Button, state State) {
-	s.access.Lock()
-	defer s.access.Unlock()
+func (w *Watcher) SetState(button Button, state State) {
+	w.access.Lock()
+	defer w.access.Unlock()
 
-	s.states[button] = state
+	// If the state lookup table is too small to contain the button, expand it.
+	if len(w.states) < int(button)+1 {
+		oldStates := w.states
+		w.states = make([]State, int(button)+1)
+		copy(w.states, oldStates)
+	}
+
+	w.states[button] = state
 }
 
-// States returns an copy of the internal mouse button state map used by this watcher.
-func (s *Watcher) States() map[Button]State {
-	s.access.RLock()
-	defer s.access.RUnlock()
+// States returns an copy of the internal mouse button state lookup table used
+// by this watcher. The indices of the lookup table are literally Button
+// values:
+//
+//  states := watcher.States()
+//  leftState := states[mouse.Left]
+//  if leftState != InvalidState {
+//      fmt.Println("The left mouse button state is", leftState)
+//  }
+//
+// States for buttons not known to the watcher are equal to InvalidState.
+//
+// At max the lookup table will be of length 256 (as Button is declared as a
+// uint8), but it may be less.
+func (w *Watcher) States() []State {
+	w.access.RLock()
+	defer w.access.RUnlock()
 
-	copy := make(map[Button]State)
-	for button, state := range s.states {
-		copy[button] = state
+	cpy := make([]State, len(w.states))
+	copy(cpy, w.states)
+	return cpy
+}
+
+// EachState calls f with each known button to this watcher and it's current
+// button state. It does so until the function returns false or there are no
+// more buttons known to the watcher.
+func (w *Watcher) EachState(f func(b Button, s State) bool) {
+	w.access.RLock()
+	defer w.access.RUnlock()
+
+	for b, state := range w.states {
+		button := Button(b)
+		if button == Invalid {
+			continue
+		}
+
+		// Call the function without the lock being held, so they can access
+		// methods on this watcher still.
+		w.access.RUnlock()
+		cont := f(button, state)
+		w.access.RLock()
+
+		if !cont {
+			return
+		}
 	}
-	return copy
 }
 
 // State returns the current state of the specified mouse button.
-func (s *Watcher) State(button Button) State {
-	s.access.Lock()
-	defer s.access.Unlock()
+func (w *Watcher) State(button Button) State {
+	w.access.Lock()
+	defer w.access.Unlock()
 
-	state, ok := s.states[button]
-	if !ok {
-		s.states[button] = Up
+	// If the lookup table isn't large enough to contain the button's state, we
+	// are not aware of it so it's in the Up state.
+	b := int(button)
+	if b > len(w.states) {
+		return Up
 	}
-	return state
+
+	state := w.states[b]
+	if state != InvalidState {
+		return state
+	}
+	return Up
 }
 
-// Down tells whether the specified mouse button is currently in the down state.
-func (s *Watcher) Down(button Button) bool {
-	return s.State(button) == Down
+// Down tells whether the specified mouse button is currently in the down
+// state.
+func (w *Watcher) Down(button Button) bool {
+	return w.State(button) == Down
 }
 
 // Up tells whether the specified mouse button is currently in the up state.
-func (s *Watcher) Up(button Button) bool {
-	return s.State(button) == Up
+func (w *Watcher) Up(button Button) bool {
+	return w.State(button) == Up
 }
 
 // NewWatcher returns a new, initialized, mouse watcher.
 func NewWatcher() *Watcher {
-	s := new(Watcher)
-	s.states = make(map[Button]State)
-	return s
+	w := new(Watcher)
+	w.states = make([]State, 8)
+	return w
 }
