@@ -4,4 +4,4 @@
 //go:generate stringer -type=State,Button -output=stringers.go
 
 // Package mouse implements various mouse related data types.
-package mouse // import "azul3d.org/mouse.v2-dev"
+package mouse // import "azul3d.org/mouse.v2-unstable"
